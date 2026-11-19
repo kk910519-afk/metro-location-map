@@ -4,7 +4,7 @@ import { lineChart, barChart, sparkline, bindCharts, eok, ymLabel } from './char
 import { starsHtml, tierBadge, hubCell, srcLinks, regBadge, isLow } from './districts.js';
 import { notesHtml, bindNotes, pctText, linkRow, catalystList } from './market.js';
 import { getMapKit } from './mapkit.js';
-import { externalLinks, safeHref } from './links.js';
+import { externalLinks, districtMapLinks, safeHref } from './links.js';
 
 const st = { band: 's84', years: 3, sort: 'count', pmin: null, pmax: null, built: 'all', ...local.get('detail.v1', {}) };
 const persist = () => local.set('detail.v1', { band: st.band, years: st.years, sort: st.sort, pmin: st.pmin, pmax: st.pmax, built: st.built });
@@ -34,11 +34,13 @@ export async function districtDetail(id, opts = {}) {
   const yearNow = new Date().getFullYear();
 
   // ---------- 머리 ----------
+  const mapLinks = districtMapLinks(d.area.center);
   const head = `<p class="small"><a href="#/market">← 급지 지도</a></p>
     <section class="dt-head"><div class="dt-head-text"><p class="eyebrow">${esc(d.area.group)}${d.area.parts.length ? ` · ${esc(d.area.parts.map((p) => `${p.sigungu} ${p.dongs.join('·')}`).join(' / '))}` : ''}</p><h1>${esc(d.area.name)}</h1>${d.area.note ? `<p class="small muted">${esc(d.area.note)}</p>` : ''}</div>
       <div class="dt-head-side"><div class="dt-tier">${t?.tier ? `<span class="sc-overall"><span class="sc-when">지금</span>${tierBadge(t.tier)} <span class="arrow">→</span> <span class="sc-when">미래</span>${tierBadge(t.tierFuture)}</span>` : `<span class="muted">${d.area.planned ? '입주 전(시세가 없어 급지 없음)' : '급지 미정(시세 없음)'}</span>`}</div>
         ${t?.tier ? `<div class="small muted">${t.score}점${t.scoreFuture !== t.score ? ` → ${t.scoreFuture}점` : ''}${t.rank ? ` · ${t.rank.of}곳 중 ${t.rank.score}위${t.rank.scoreFuture !== t.rank.score ? ` → ${t.rank.scoreFuture}위` : ''}` : ''}${t.partial ? ' · 일부 항목 미확인' : ''}</div>` : ''}
-        <button type="button" class="btn small secondary" id="pin-btn" aria-pressed="${D.pinned}">${D.pinned ? '★ 관심 지구' : '☆ 관심 지구로 표시'}</button></div></section>
+        <button type="button" class="btn small secondary" id="pin-btn" aria-pressed="${D.pinned}">${D.pinned ? '★ 관심 지구' : '☆ 관심 지구로 표시'}</button></div>
+      ${mapLinks.length ? `<div class="dt-ext" role="group" aria-label="이 지구 주변 시세 지도 열기">${mapLinks.map((l) => `<a class="btn small secondary" href="${esc(safeHref(l.url))}" target="_blank" rel="noopener noreferrer" title="${esc(l.label)}에서 이 지구 중심 주변 지도 열기(새 창) · ${esc(l.note)}">${esc(l.label)} <span aria-hidden="true">↗</span></a>`).join('')}</div>` : ''}</section>
     <nav class="dt-tabs" aria-label="구역 바로가기">${SECTIONS.filter(([k]) => !(d.area.planned && k === 'complexes')).map(([k, label]) => `<button type="button" data-jump="sec-${k}">${label}</button>`).join('')}</nav>`;
 
   // ---------- 한눈에 ----------

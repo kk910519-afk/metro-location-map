@@ -394,9 +394,12 @@ table.plan th { text-align: left; white-space: nowrap; width: 120px; color: var(
 .facts-group > summary { cursor: pointer; padding: 6px 0; }
 
 /* ===== 지구 상세분석 ===== */
-.dt-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px 28px; flex-wrap: wrap; margin-bottom: 14px; }
-.dt-head-text { min-width: 0; }
-.dt-head-side { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.dt-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "text ext" "text side"; align-items: end; gap: 10px 28px; margin-bottom: 14px; }
+.dt-head-text { min-width: 0; grid-area: text; }
+.dt-head-side { grid-area: side; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+/* 시세 지도 바로가기(호갱노노·네이버 부동산): 넓은 화면은 오른쪽 위에 나란히, 좁은 화면은 급지 옆에 위아래로 */
+.dt-ext { grid-area: ext; justify-self: end; align-self: start; display: flex; gap: 6px; }
+.dt-ext .btn { white-space: nowrap; }
 .dt-tier .tier-badge { font-size: 20px; padding: 6px 13px; border-radius: 10px; }
 .dt-tabs { position: sticky; top: 65px; z-index: 40; display: flex; gap: 6px; overflow-x: auto; padding: 8px 2px; margin: 0 0 14px; background: var(--bg); border-bottom: 1px solid var(--line); scrollbar-width: thin; }
 .dt-tabs button { flex: none; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); font: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; white-space: nowrap; }
@@ -449,7 +452,10 @@ a.dz-sel-card:hover { text-decoration: none; background: var(--panel-2); }
 @media (max-width: 900px) {
   .dt-grid { grid-template-columns: 1fr; gap: 0; }
   .dt-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dt-head { grid-template-areas: "text text" "side ext"; align-items: start; gap: 12px 12px; }
   .dt-head-side { align-items: flex-start; }
+  .dt-ext { flex-direction: column; align-items: stretch; }
+  .dt-ext .btn { min-height: 36px; }
   .dt-tabs { top: 96px; }
   .dt-sec { scroll-margin-top: 150px; }
   .dt-oneline { font-size: 16px; }
